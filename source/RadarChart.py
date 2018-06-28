@@ -26,12 +26,9 @@ chart = RadarChart()
 chart.type = "marker"
 
 labels = Reference(ws, min_col=2, min_row=1, max_col=5)
+data = Reference(ws, min_col=1, min_row=2, max_col=5, max_row=5)
 
-for i in range(2, 6):
-    values = Reference(ws, min_row=i, min_col=1, max_col=5)
-    series = Series(values, title_from_data=True)
-    chart.series.append(series)
-
+chart.add_data(data, from_rows=True, titles_from_data=True)
 chart.set_categories(Reference(ws, min_col=2, min_row=1, max_col=5))
 
 chart.style = 26
