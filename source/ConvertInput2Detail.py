@@ -3,53 +3,17 @@
 
 import os
 import shutil
+import Static
 
 
 class ConvertInput2Detail():
-    rootDir = '../Resource/input'
-
-    ignoreFileName = [
-        'RolesOfLeadershipDetail.xlsx',
-        'RolesOfLeadershipOverview.xlsx',
-    ]
-
-    targetEvaluateValueDict = {'Strongly Disagree': 0,
-                               'Disagree': 20,
-                               'Slightly Disagree': 40,
-                               'Slightly Agree': 60,
-                               'Agree': 80,
-                               'Strongly Agree': 100}
-
-    source_col = 'C'
-    source_begin_row = 16
-    source_end_row = 79
-
-    targetRootDir = '../Resource/output'
-
-    """
-    [col_position, can_direct_write_data]
-    ['L', True]
-    """
-    targetNameDict = {'DirectReport': ['L', False],
-                      'Peer': ['M', False],
-                      'Boss': ['N', False],
-                      'OthersAverage': ['O', True],
-                      'Self': ['P', True]}
-
-    """
-    [begin_row_index, end_row_index, question_index_begin, question_index_end]
-    [2, 16, 0, 14, 0]
-    """
-    targetSheetDict = {'Pathfindings': [2, 16, 0, 14],
-                       'Aligning': [2, 20, 15, 33],
-                       'Empowering': [2, 14, 34, 46],
-                       'Modeling': [2, 18, 47, 63]}
-
-    template_detail_table_name = 'RolesOfLeadershipDetail.xlsx'
-    template_detail_table_path = os.path.join('../Resource/', template_detail_table_name)
+    DataMgr = None
 
     def __init__(self):
         return
+
+    def set_data_mgr(self, data_mgr):
+        self.DataMgr = data_mgr
 
     def convert(self, file_dir):
         file_list = os.listdir(file_dir)
@@ -77,34 +41,38 @@ class ConvertInput2Detail():
                 self.data_operate(path, identity, can_direct_write, target_file_path)
         return
 
+    @staticmethod
     def check_evaluate_string_legal(self, evaluate):
         result = False
 
-        for key in self.targetEvaluateValueDict:
+        for key in Static.targetEvaluateValueDict:
             if key == evaluate:
                 return True
 
         return result
 
+    @staticmethod
     def get_evaluate_value(self, evaluate):
-        for key in self.targetEvaluateValueDict:
+        for key in Static.targetEvaluateValueDict:
             if key == evaluate:
-                return self.targetEvaluateValueDict[key]
+                return Static.targetEvaluateValueDict[key]
 
         return -1
 
-    def check_is_ignore_file(self, name):
-        for i in range(len(self.ignoreFileName)):
-            if name == self.ignoreFileName[i]:
+    @staticmethod
+    def check_is_ignore_file(name):
+        for i in range(len(Static.ignoreFileName)):
+            if name == Static.ignoreFileName[i]:
                 return True
 
         return False
 
+    @staticmethod
     def check_can_direct_write(self, name):
-        if not (name in self.targetNameDict):
+        if not (name in Static.targetNameDict):
             return -1
 
-        return self.targetNameDict[name][1]
+        return Static.targetNameDict[name][1]
 
     @staticmethod
     def get_file_identity(file_name):
@@ -129,13 +97,17 @@ class ConvertInput2Detail():
     def prepare_for_output(self, path):
         parent_folder_name = os.path.dirname(path)
         target_folder_path = parent_folder_name.replace("input", "output")
-        target_file_path = os.path.join(target_folder_path, self.template_detail_table_name)
+        target_file_path = os.path.join(target_folder_path, Static.template_detail_table_name)
 
         if not os.path.exists(target_folder_path):
             os.makedirs(target_folder_path)
 
         if not os.path.exists(target_file_path):
-            shutil.copyfile(self.template_detail_table_path, target_file_path)
+            shutil.copyfile(Static.template_detail_table_path, target_file_path)
+
+        target_file_path = os.path.join(target_folder_path, Static.template_overview_table_name)
+        if not os.path.exists(target_file_path):
+            shutil.copyfile(Static.template_overview_table_path, target_file_path)
 
         return target_file_path
 
@@ -144,17 +116,20 @@ class ConvertInput2Detail():
         wb = load_workbook(path)
         ws = wb.active
 
-        for j in range(0, self.source_end_row - self.source_begin_row + 1):
-            read_unit = self.source_col + str(j + self.source_begin_row)
+        for j in range(0, Static.source_end_row - Static.source_begin_row + 1):
+            read_unit = Static.source_col + str(j + Static.source_begin_row)
 
             if self.check_evaluate_string_legal(ws[read_unit].value):
                 # print(ws[read_unit].value)
-                if can_direct_write:
-                    self.write_data(evaluate_identity, target_file_path, ws[read_unit].value, j)
-                # else:
-                #     # TODO
-                #     print("Call DataMgr function")
+                base_name = os.path.basename(path)
+                be_evaluated_name = self.get_be_evaluated_name(base_name)
 
+                if can_direct_write:
+                    value = self.write_data(evaluate_identity, target_file_path, ws[read_unit].value, j)
+                    self.DataMgr.process_score(be_evaluated_name, evaluate_identity, value)
+                else:
+                    value = self.get_evaluate_value(ws[read_unit].value)
+                    self.DataMgr.process_peer_score(be_evaluated_name, j, value)
             else:
                 print("illegal evaluate in file " + os.path.abspath(path) + " unit " + read_unit)
                 return
@@ -171,11 +146,44 @@ class ConvertInput2Detail():
         wb_write.template = False
         wb_write.save(target_file_path)
 
+        return ws_write[write_unit].value
+
+    @staticmethod
     def get_target_sheet_and_unit(self, evaluate_identity, index):
-        for key in self.targetSheetDict:
-            if index >= self.targetSheetDict[key][2] and index <= self.targetSheetDict[key][3]:
-                offset = index - self.targetSheetDict[key][2]
-                target_unit = str(self.targetNameDict[evaluate_identity][0]) + str(self.targetSheetDict[key][0] + offset)
+        for key in Static.targetSheetDict:
+            if index >= Static.targetSheetDict[key][2] and index <= Static.targetSheetDict[key][3]:
+                offset = index - Static.targetSheetDict[key][2]
+                target_unit = str(Static.targetNameDict[evaluate_identity][0]) + str(Static.targetSheetDict[key][0] + offset)
                 return key, target_unit
 
         return "illegal_sheet", -1
+
+    @staticmethod
+    def get_be_evaluated_name(file_name):
+        return file_name.split('2')[1]
+
+    def generate_other_average(self, file_dir):
+        file_list = os.listdir(file_dir)
+
+        for i in range(0, len(file_list)):
+            path = os.path.join(file_dir, file_list[i])
+            base_name = os.path.basename(path)
+
+            if os.path.isdir(path):
+                self.generate_other_average(path)
+
+            if base_name == Static.template_detail_table_name:
+                from openpyxl import load_workbook
+                wb = load_workbook(path)
+                for key in Static.targetSheetDict:
+                    ws = wb[key]
+                    for i in range(Static.targetSheetDict[key][0], Static.targetSheetDict[key][1]):
+                        direct_value = ws[('L' + str(i))]
+                        peer_value = ws[('M' + str(i))]
+                        boss_value = ws[('N' + str(i))]
+                        value = (direct_value + peer_value + boss_value) / 3
+                        ws[('O' + str(i))] = value
+                        wb.template = False
+                        wb.save(path)
+        return
+
