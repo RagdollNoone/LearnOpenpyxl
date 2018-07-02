@@ -37,13 +37,15 @@ class DataMgr():
 
     def generate_peer_average_score(self):
         for name in self.peerDetailTable:
+            dir_path = os.path.join(targetRootDir, name)
+            file_path = os.path.join(dir_path, template_detail_table_name)
+            print("generate_peer_average_score file name is " + file_path)
+
             for index in self.peerDetailTable[name]:
                 data = int(self.peerDetailTable[name][index] / 4)
                 self.peerDetailTable[name][index] = data
 
                 self.process_score(name, "Peer", data)
-                dir_path = os.path.join(targetRootDir, name)
-                file_path = os.path.join(dir_path, template_detail_table_name)
                 self.convertInput2Detail.write_data("Peer", file_path, data, index)
         return
 

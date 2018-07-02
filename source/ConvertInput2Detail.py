@@ -41,6 +41,7 @@ class ConvertInput2Detail():
 
             file_format_arr = os.path.splitext(path)
             if file_format_arr[1] == ".xlsx":
+                print("convert file name is " + path)
 
                 identity = self.get_file_identity(base_name)
                 if identity == "illegal identity":
@@ -68,7 +69,7 @@ class ConvertInput2Detail():
             if key == evaluate:
                 return targetEvaluateValueDict[key]
 
-        return -1
+        return evaluate
 
     @staticmethod
     def check_is_ignore_file(name):
@@ -152,8 +153,8 @@ class ConvertInput2Detail():
         from openpyxl import load_workbook
         wb_write = load_workbook(target_file_path)
         write_sheet, write_unit = self.get_target_sheet_and_unit(evaluate_identity, index)
-        ws_write = wb_write[write_sheet]
 
+        ws_write = wb_write[write_sheet]
         ws_write[write_unit] = self.get_evaluate_value(value)
         wb_write.template = False
         wb_write.save(target_file_path)
@@ -186,11 +187,15 @@ class ConvertInput2Detail():
                 self.generate_other_average(path)
 
             if base_name == template_detail_table_name:
+                print("generate_other_average file name is " + path)
+
                 from openpyxl import load_workbook
                 wb = load_workbook(path)
                 for key in targetSheetDict:
                     ws = wb[key]
-                    for j in range(targetSheetDict[key][0], targetSheetDict[key][1]):
+                    for j in range(int(targetSheetDict[key][0]), int(targetSheetDict[key][1] + 1)):
+                        print("generate_other_average current sheet is " + key + "current process row is " + str(j))
+
                         direct_value = ws[('L' + str(j))].value
                         peer_value = ws[('M' + str(j))].value
                         boss_value = ws[('N' + str(j))].value

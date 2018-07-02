@@ -7,6 +7,7 @@ from Static import template_overview_table_name
 from Static import template_detail_table_name
 from Static import targetSheetArr
 from Static import targetSheetDict
+from Static import overviewNameDict
 from Static import targetNameDict
 
 
@@ -25,6 +26,8 @@ class SetData2Overview():
                 self.generate_overview_table(path)
 
             if base_name == template_overview_table_name:
+                print("generate_overview_table file name is " + path)
+
                 from openpyxl import load_workbook
                 to_wb = load_workbook(path)
                 from_path = path.replace(template_overview_table_name, template_detail_table_name)
@@ -54,10 +57,10 @@ class SetData2Overview():
                     direct_report_average = int(direct_report_total / number)
 
                     to_ws = to_wb.active
-                    to_ws[targetNameDict['Peer'][sheet_name]] = peer_average
-                    to_ws[targetNameDict['Boss'][sheet_name]] = boss_average
-                    to_ws[targetNameDict['Self'][sheet_name]] = self_average
-                    to_ws[targetNameDict['DirectReport'][sheet_name]] = direct_report_average
+                    to_ws[overviewNameDict['Peer'][sheet_name]] = peer_average
+                    to_ws[overviewNameDict['Boss'][sheet_name]] = boss_average
+                    to_ws[overviewNameDict['Self'][sheet_name]] = self_average
+                    to_ws[overviewNameDict['DirectReport'][sheet_name]] = direct_report_average
 
                     to_wb.template = False
                     to_wb.save(path)
@@ -65,6 +68,6 @@ class SetData2Overview():
 
     @staticmethod
     def get_unit(identity, index):
-        col = targetNameDict[identity]
+        col = targetNameDict[identity][0]
         result = col + str(index)
         return result

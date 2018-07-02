@@ -23,10 +23,10 @@ template_overview_table_path = os.path.join('../Resource/', template_overview_ta
 
 targetRootDir = '../Resource/output'
 
-targetNameDict = {'Boss': {'Pathfinding': 'E12', 'Aligning': 'F12', 'Empowering': 'G12', 'Modeling': 'H12'},
-                  'Peer': {'Pathfinding': 'E13', 'Aligning': 'F13', 'Empowering': 'G13', 'Modeling': 'H13'},
-                  'DirectReport': {'Pathfinding': 'E14', 'Aligning': 'F14', 'Empowering': 'G14', 'Modeling': 'H14'},
-                  'Self': {'Pathfinding': 'E12', 'Aligning': 'F11', 'Empowering': 'G11', 'Modeling': 'H11'}}
+overviewNameDict = {'Boss': {'Pathfindings': 'E12', 'Aligning': 'F12', 'Empowering': 'G12', 'Modeling': 'H12'},
+                    'Peer': {'Pathfindings': 'E13', 'Aligning': 'F13', 'Empowering': 'G13', 'Modeling': 'H13'},
+                    'DirectReport': {'Pathfindings': 'E14', 'Aligning': 'F14', 'Empowering': 'G14', 'Modeling': 'H14'},
+                    'Self': {'Pathfindings': 'E11', 'Aligning': 'F11', 'Empowering': 'G11', 'Modeling': 'H11'}}
 
 targetSheetArr = ['Pathfindings', 'Aligning', 'Empowering', 'Modeling']
 
