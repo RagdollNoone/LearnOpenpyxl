@@ -18,7 +18,7 @@ source_end_row = 79
 template_detail_table_name = 'RolesOfLeadershipDetail.xlsx'
 template_detail_table_path = os.path.join('../Resource/', template_detail_table_name)
 
-template_overview_table_name = 'RolesOfLeadershipDetail.xlsx'
+template_overview_table_name = 'RolesOfLeadershipOverview.xlsx'
 template_overview_table_path = os.path.join('../Resource/', template_overview_table_name)
 
 targetRootDir = '../Resource/output'
@@ -28,7 +28,7 @@ targetNameDict = {'Boss': {'Pathfinding': 'E12', 'Aligning': 'F12', 'Empowering'
                   'DirectReport': {'Pathfinding': 'E14', 'Aligning': 'F14', 'Empowering': 'G14', 'Modeling': 'H14'},
                   'Self': {'Pathfinding': 'E12', 'Aligning': 'F11', 'Empowering': 'G11', 'Modeling': 'H11'}}
 
-targetSheetArr = ['Pathfinding', 'Aligning', 'Empowering', 'Modeling']
+targetSheetArr = ['Pathfindings', 'Aligning', 'Empowering', 'Modeling']
 
 targetEvaluateValueDict = {'Strongly Disagree': 0,
                            'Disagree': 20,
@@ -57,7 +57,6 @@ targetSheetDict = {'Pathfindings': [2, 16, 0, 14],
                    'Modeling': [2, 18, 47, 63]}
 
 
-@staticmethod
 def clean_output_dir(dir_path):
     ls = os.listdir(dir_path)
     for i in ls:

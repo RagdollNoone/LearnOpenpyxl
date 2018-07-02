@@ -53,7 +53,7 @@ class ConvertInput2Detail():
         return
 
     @staticmethod
-    def check_evaluate_string_legal(self, evaluate):
+    def check_evaluate_string_legal(evaluate):
         result = False
 
         for key in targetEvaluateValueDict:
@@ -63,7 +63,7 @@ class ConvertInput2Detail():
         return result
 
     @staticmethod
-    def get_evaluate_value(self, evaluate):
+    def get_evaluate_value(evaluate):
         for key in targetEvaluateValueDict:
             if key == evaluate:
                 return targetEvaluateValueDict[key]
@@ -79,7 +79,7 @@ class ConvertInput2Detail():
         return False
 
     @staticmethod
-    def check_can_direct_write(self, name):
+    def check_can_direct_write(name):
         if not (name in targetNameDict):
             return -1
 
@@ -105,7 +105,8 @@ class ConvertInput2Detail():
     """
     生成输出目录和文件
     """
-    def prepare_for_output(self, path):
+    @staticmethod
+    def prepare_for_output(path):
         parent_folder_name = os.path.dirname(path)
         target_folder_path = parent_folder_name.replace("input", "output")
         target_file_path = os.path.join(target_folder_path, template_detail_table_name)
@@ -116,9 +117,9 @@ class ConvertInput2Detail():
         if not os.path.exists(target_file_path):
             shutil.copyfile(template_detail_table_path, target_file_path)
 
-        target_file_path = os.path.join(target_folder_path, template_overview_table_name)
-        if not os.path.exists(target_file_path):
-            shutil.copyfile(template_overview_table_path, target_file_path)
+        overview_file_path = os.path.join(target_folder_path, template_overview_table_name)
+        if not os.path.exists(overview_file_path):
+            shutil.copyfile(template_overview_table_path, overview_file_path)
 
         return target_file_path
 
@@ -171,7 +172,8 @@ class ConvertInput2Detail():
 
     @staticmethod
     def get_be_evaluated_name(file_name):
-        return file_name.split('2')[1]
+        be_evaluate_file_name = file_name.split('2')[1]
+        return be_evaluate_file_name.split('xlsx')[0]
 
     def generate_other_average(self, file_dir):
         file_list = os.listdir(file_dir)
@@ -188,12 +190,12 @@ class ConvertInput2Detail():
                 wb = load_workbook(path)
                 for key in targetSheetDict:
                     ws = wb[key]
-                    for i in range(targetSheetDict[key][0], targetSheetDict[key][1]):
-                        direct_value = ws[('L' + str(i))]
-                        peer_value = ws[('M' + str(i))]
-                        boss_value = ws[('N' + str(i))]
-                        value = (direct_value + peer_value + boss_value) / 3
-                        ws[('O' + str(i))] = value
+                    for j in range(targetSheetDict[key][0], targetSheetDict[key][1]):
+                        direct_value = ws[('L' + str(j))].value
+                        peer_value = ws[('M' + str(j))].value
+                        boss_value = ws[('N' + str(j))].value
+                        value = int((direct_value + peer_value + boss_value) / 3)
+                        ws[('O' + str(j))] = value
                         wb.template = False
                         wb.save(path)
         return

@@ -27,7 +27,8 @@ class SetData2Overview():
             if base_name == template_overview_table_name:
                 from openpyxl import load_workbook
                 to_wb = load_workbook(path)
-                from_wb = load_workbook(template_detail_table_name)
+                from_path = path.replace(template_overview_table_name, template_detail_table_name)
+                from_wb = load_workbook(from_path)
 
                 for j in range(len(targetSheetArr)):
                     sheet_name = targetSheetArr[j]
@@ -41,10 +42,10 @@ class SetData2Overview():
                     direct_report_total = 0
 
                     for k in range(begin_row, end_row):
-                        peer_total = peer_total + from_ws[self.get_unit('Peer', k)]
-                        boss_total = boss_total + from_ws[self.get_unit('Boss', k)]
-                        self_total = self_total + from_ws[self.get_unit('Self', k)]
-                        direct_report_total = direct_report_total + from_ws[self.get_unit('DirectReport', k)]
+                        peer_total = peer_total + from_ws[self.get_unit('Peer', k)].value
+                        boss_total = boss_total + from_ws[self.get_unit('Boss', k)].value
+                        self_total = self_total + from_ws[self.get_unit('Self', k)].value
+                        direct_report_total = direct_report_total + from_ws[self.get_unit('DirectReport', k)].value
 
                     number = end_row - begin_row + 1
                     peer_average = int(peer_total / number)
