@@ -8,7 +8,7 @@ from Static import targetRootDir
 from Static import clean_output_dir
 from Static import rootDir
 
-scan_data = False
+scan_data = True
 
 # init
 dm = DataMgr.DataMgr()
@@ -59,5 +59,6 @@ print("generate_overview_table is finish")
 print("##########################")
 
 # 生成图像
+
 
 # excel转pdf输出

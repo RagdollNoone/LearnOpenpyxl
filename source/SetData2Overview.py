@@ -62,8 +62,11 @@ class SetData2Overview():
                     to_ws[overviewNameDict['Self'][sheet_name]] = self_average
                     to_ws[overviewNameDict['DirectReport'][sheet_name]] = direct_report_average
 
-                    to_wb.template = False
-                    to_wb.save(path)
+                self.generate_line_chart(to_wb)
+                self.generate_radar_chart(to_wb)
+
+                to_wb.template = False
+                to_wb.save(path)
         return
 
     @staticmethod
@@ -71,3 +74,57 @@ class SetData2Overview():
         col = targetNameDict[identity][0]
         result = col + str(index)
         return result
+
+    @staticmethod
+    def generate_line_chart(wb):
+        from openpyxl.chart import (
+            LineChart,
+            Reference,
+        )
+
+        ws = wb.active
+        labels = Reference(ws, min_col=5, min_row=10, max_col=8)
+        data = Reference(ws, min_col=4, min_row=11, max_col=8, max_row=14)
+
+        # Chart with date axis
+        line_chart = LineChart()
+        line_chart.style = 26  # 17 黑白
+        line_chart.width = 30
+        line_chart.height = 14
+
+        line_chart.add_data(data, from_rows=True, titles_from_data=True)
+        line_chart.set_categories(labels)
+
+        for s in line_chart.series:
+            s.graphicalProperties.line.width = 20000
+
+        ws.add_chart(line_chart, "D21")
+        return
+
+    @staticmethod
+    def generate_radar_chart(wb):
+        from openpyxl.chart import (
+            RadarChart,
+            Reference,
+        )
+
+        ws = wb.active
+        labels = Reference(ws, min_col=5, min_row=10, max_col=8)
+        data = Reference(ws, min_col=4, min_row=11, max_col=8, max_row=14)
+
+        radar_chart = RadarChart()
+        radar_chart.type = "marker"
+
+        radar_chart.add_data(data, from_rows=True, titles_from_data=True)
+        radar_chart.set_categories(labels)
+
+        radar_chart.style = 26
+        radar_chart.y_axis.delete = True
+        radar_chart.width = 30
+        radar_chart.height = 14
+
+        for s in radar_chart.series:
+            s.graphicalProperties.line.width = 20000
+
+        ws.add_chart(radar_chart, "D58")
+        return
