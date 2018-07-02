@@ -2,7 +2,12 @@
 # -*- coding:utf-8 -*-
 
 import os
-import Static
+
+from Static import template_overview_table_name
+from Static import template_detail_table_name
+from Static import targetSheetArr
+from Static import targetSheetDict
+from Static import targetNameDict
 
 
 class SetData2Overview():
@@ -19,21 +24,46 @@ class SetData2Overview():
             if os.path.isdir(path):
                 self.generate_overview_table(path)
 
-            if base_name == Static.template_overview_table_name:
+            if base_name == template_overview_table_name:
                 from openpyxl import load_workbook
                 to_wb = load_workbook(path)
-                from_wb = load_workbook(Static.template_detail_table_name)
+                from_wb = load_workbook(template_detail_table_name)
 
-                for i in range(len(Static.targetSheetArr)):
-                    from_ws = from_wb[Static.targetSheetArr[i]]
+                for j in range(len(targetSheetArr)):
+                    sheet_name = targetSheetArr[j]
+                    from_ws = from_wb[sheet_name]
+                    begin_row = targetSheetDict[sheet_name][0]
+                    end_row = targetSheetDict[sheet_name][1]
 
-                    # for i in range(Static.targetSheetDict[key][0], Static.targetSheetDict[key][1]):
-                    #     direct_value = ws[('L' + str(i))]
-                    #     peer_value = ws[('M' + str(i))]
-                    #     boss_value = ws[('N' + str(i))]
-                    #     value = (direct_value + peer_value + boss_value) / 3
-                    #     ws[('O' + str(i))] = value
-                    #     wb.template = False
-                    #     wb.save(path)
+                    peer_total = 0
+                    boss_total = 0
+                    self_total = 0
+                    direct_report_total = 0
 
+                    for k in range(begin_row, end_row):
+                        peer_total = peer_total + from_ws[self.get_unit('Peer', k)]
+                        boss_total = boss_total + from_ws[self.get_unit('Boss', k)]
+                        self_total = self_total + from_ws[self.get_unit('Self', k)]
+                        direct_report_total = direct_report_total + from_ws[self.get_unit('DirectReport', k)]
+
+                    number = end_row - begin_row + 1
+                    peer_average = int(peer_total / number)
+                    boss_average = int(boss_total / number)
+                    self_average = int(self_total / number)
+                    direct_report_average = int(direct_report_total / number)
+
+                    to_ws = to_wb.active
+                    to_ws[targetNameDict['Peer'][sheet_name]] = peer_average
+                    to_ws[targetNameDict['Boss'][sheet_name]] = boss_average
+                    to_ws[targetNameDict['Self'][sheet_name]] = self_average
+                    to_ws[targetNameDict['DirectReport'][sheet_name]] = direct_report_average
+
+                    to_wb.template = False
+                    to_wb.save(path)
         return
+
+    @staticmethod
+    def get_unit(identity, index):
+        col = targetNameDict[identity]
+        result = col + str(index)
+        return result

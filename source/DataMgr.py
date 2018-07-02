@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-import Static
+import os
+
+from Static import targetRootDir
+from Static import template_detail_table_name
 
 
 class DataMgr():
@@ -37,7 +40,11 @@ class DataMgr():
             for index in self.peerDetailTable[name]:
                 data = int(self.peerDetailTable[name][index] / 4)
                 self.peerDetailTable[name][index] = data
-                self.process_peer_score(name, "peer", data)
+
+                self.process_score(name, "Peer", data)
+                dir_path = os.path.join(targetRootDir, name)
+                file_path = os.path.join(dir_path, template_detail_table_name)
+                self.convertInput2Detail.write_data("Peer", file_path, data, index)
         return
 
     def process_score(self, name, identity, value):
@@ -60,8 +67,8 @@ class DataMgr():
         return
 
     def generate_other_average_score(self):
-        self.convertInput2Detail.generate_other_average(Static.targetRootDir)
+        self.convertInput2Detail.generate_other_average(targetRootDir)
         return
 
     def generate_overview_table(self):
-        self.setData2Overview.generate_overview_table(Static.targetRootDir)
+        self.setData2Overview.generate_overview_table(targetRootDir)

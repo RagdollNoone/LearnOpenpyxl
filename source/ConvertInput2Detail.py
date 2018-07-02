@@ -3,7 +3,18 @@
 
 import os
 import shutil
-import Static
+
+from Static import ignoreFileName
+from Static import targetNameDict
+from Static import source_col
+from Static import source_begin_row
+from Static import source_end_row
+from Static import targetEvaluateValueDict
+from Static import template_detail_table_path
+from Static import template_overview_table_name
+from Static import template_overview_table_path
+from Static import targetSheetDict
+from Static import template_detail_table_name
 
 
 class ConvertInput2Detail():
@@ -45,7 +56,7 @@ class ConvertInput2Detail():
     def check_evaluate_string_legal(self, evaluate):
         result = False
 
-        for key in Static.targetEvaluateValueDict:
+        for key in targetEvaluateValueDict:
             if key == evaluate:
                 return True
 
@@ -53,26 +64,26 @@ class ConvertInput2Detail():
 
     @staticmethod
     def get_evaluate_value(self, evaluate):
-        for key in Static.targetEvaluateValueDict:
+        for key in targetEvaluateValueDict:
             if key == evaluate:
-                return Static.targetEvaluateValueDict[key]
+                return targetEvaluateValueDict[key]
 
         return -1
 
     @staticmethod
     def check_is_ignore_file(name):
-        for i in range(len(Static.ignoreFileName)):
-            if name == Static.ignoreFileName[i]:
+        for i in range(len(ignoreFileName)):
+            if name == ignoreFileName[i]:
                 return True
 
         return False
 
     @staticmethod
     def check_can_direct_write(self, name):
-        if not (name in Static.targetNameDict):
+        if not (name in targetNameDict):
             return -1
 
-        return Static.targetNameDict[name][1]
+        return targetNameDict[name][1]
 
     @staticmethod
     def get_file_identity(file_name):
@@ -97,17 +108,17 @@ class ConvertInput2Detail():
     def prepare_for_output(self, path):
         parent_folder_name = os.path.dirname(path)
         target_folder_path = parent_folder_name.replace("input", "output")
-        target_file_path = os.path.join(target_folder_path, Static.template_detail_table_name)
+        target_file_path = os.path.join(target_folder_path, template_detail_table_name)
 
         if not os.path.exists(target_folder_path):
             os.makedirs(target_folder_path)
 
         if not os.path.exists(target_file_path):
-            shutil.copyfile(Static.template_detail_table_path, target_file_path)
+            shutil.copyfile(template_detail_table_path, target_file_path)
 
-        target_file_path = os.path.join(target_folder_path, Static.template_overview_table_name)
+        target_file_path = os.path.join(target_folder_path, template_overview_table_name)
         if not os.path.exists(target_file_path):
-            shutil.copyfile(Static.template_overview_table_path, target_file_path)
+            shutil.copyfile(template_overview_table_path, target_file_path)
 
         return target_file_path
 
@@ -116,8 +127,8 @@ class ConvertInput2Detail():
         wb = load_workbook(path)
         ws = wb.active
 
-        for j in range(0, Static.source_end_row - Static.source_begin_row + 1):
-            read_unit = Static.source_col + str(j + Static.source_begin_row)
+        for j in range(0, source_end_row - source_begin_row + 1):
+            read_unit = source_col + str(j + source_begin_row)
 
             if self.check_evaluate_string_legal(ws[read_unit].value):
                 # print(ws[read_unit].value)
@@ -149,11 +160,11 @@ class ConvertInput2Detail():
         return ws_write[write_unit].value
 
     @staticmethod
-    def get_target_sheet_and_unit(self, evaluate_identity, index):
-        for key in Static.targetSheetDict:
-            if index >= Static.targetSheetDict[key][2] and index <= Static.targetSheetDict[key][3]:
-                offset = index - Static.targetSheetDict[key][2]
-                target_unit = str(Static.targetNameDict[evaluate_identity][0]) + str(Static.targetSheetDict[key][0] + offset)
+    def get_target_sheet_and_unit(evaluate_identity, index):
+        for key in targetSheetDict:
+            if index >= targetSheetDict[key][2] and index <= targetSheetDict[key][3]:
+                offset = index - targetSheetDict[key][2]
+                target_unit = str(targetNameDict[evaluate_identity][0]) + str(targetSheetDict[key][0] + offset)
                 return key, target_unit
 
         return "illegal_sheet", -1
@@ -172,12 +183,12 @@ class ConvertInput2Detail():
             if os.path.isdir(path):
                 self.generate_other_average(path)
 
-            if base_name == Static.template_detail_table_name:
+            if base_name == template_detail_table_name:
                 from openpyxl import load_workbook
                 wb = load_workbook(path)
-                for key in Static.targetSheetDict:
+                for key in targetSheetDict:
                     ws = wb[key]
-                    for i in range(Static.targetSheetDict[key][0], Static.targetSheetDict[key][1]):
+                    for i in range(targetSheetDict[key][0], targetSheetDict[key][1]):
                         direct_value = ws[('L' + str(i))]
                         peer_value = ws[('M' + str(i))]
                         boss_value = ws[('N' + str(i))]
