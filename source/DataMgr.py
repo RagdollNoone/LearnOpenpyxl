@@ -61,7 +61,7 @@ class DataMgr():
                 self.overViewTable[name][identity] = data + value
         return
 
-    def generate_average_score(self):
+    def generate_identity_average_score(self):
         for name in self.overViewTable:
             for identity in self.overViewTable[name]:
                 data = int(self.overViewTable[name][identity] / 64)

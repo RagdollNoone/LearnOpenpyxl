@@ -42,9 +42,9 @@ if scan_data:
     print("##########################")
 
 if scan_data:
-    dm.generate_average_score()
+    dm.generate_identity_average_score()
     print("##########################")
-    print("generate_average_score is finish")
+    print("generate_identity_average_score is finish")
     print("##########################")
 
 if scan_data:
