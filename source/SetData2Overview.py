@@ -9,6 +9,7 @@ from Static import targetSheetArr
 from Static import targetSheetDict
 from Static import overviewNameDict
 from Static import targetNameDict
+from Static import radarOverviewNameDict
 
 
 class SetData2Overview():
@@ -62,8 +63,11 @@ class SetData2Overview():
                     to_ws[overviewNameDict['Self'][sheet_name]] = self_average
                     to_ws[overviewNameDict['DirectReport'][sheet_name]] = direct_report_average
 
-                self.generate_line_chart(to_wb)
-                self.generate_radar_chart(to_wb)
+                    radar_ws = to_wb["Sheet2"]
+                    radar_ws[radarOverviewNameDict['Peer'][sheet_name]] = peer_average
+                    radar_ws[radarOverviewNameDict['Boss'][sheet_name]] = boss_average
+                    radar_ws[radarOverviewNameDict['Self'][sheet_name]] = self_average
+                    radar_ws[radarOverviewNameDict['DirectReport'][sheet_name]] = direct_report_average
 
                 to_wb.template = False
                 to_wb.save(path)
@@ -76,55 +80,90 @@ class SetData2Overview():
         return result
 
     @staticmethod
-    def generate_line_chart(wb):
-        from openpyxl.chart import (
-            LineChart,
-            Reference,
-        )
+    def generate_line_chart(file_dir):
+        file_list = os.listdir(file_dir)
 
-        ws = wb.active
-        labels = Reference(ws, min_col=5, min_row=10, max_col=8)
-        data = Reference(ws, min_col=4, min_row=11, max_col=8, max_row=14)
+        for i in range(0, len(file_list)):
+            path = os.path.join(file_dir, file_list[i])
+            base_name = os.path.basename(path)
 
-        # Chart with date axis
-        line_chart = LineChart()
-        line_chart.style = 26  # 17 黑白
-        line_chart.width = 30
-        line_chart.height = 14
+            if os.path.isdir(path):
+                SetData2Overview.generate_line_chart(path)
 
-        line_chart.add_data(data, from_rows=True, titles_from_data=True)
-        line_chart.set_categories(labels)
+            if base_name == template_overview_table_name:
+                print("generate_line_chart file name is " + path)
 
-        for s in line_chart.series:
-            s.graphicalProperties.line.width = 20000
+                from openpyxl.chart import (
+                    LineChart,
+                    Reference,
+                )
 
-        ws.add_chart(line_chart, "D21")
+                from openpyxl import load_workbook
+                wb = load_workbook(path)
+                ws = wb.active
+                labels = Reference(ws, min_col=5, min_row=10, max_col=8)
+                data = Reference(ws, min_col=4, min_row=11, max_col=8, max_row=14)
+
+                # Chart with date axis
+                line_chart = LineChart()
+                line_chart.style = 26  # 17 黑白
+                line_chart.width = 30
+                line_chart.height = 14
+
+                line_chart.add_data(data, from_rows=True, titles_from_data=True)
+                line_chart.set_categories(labels)
+
+                for s in line_chart.series:
+                    s.graphicalProperties.line.width = 20000
+
+                ws.add_chart(line_chart, "D21")
+
+                wb.template = False
+                wb.save(path)
         return
 
     @staticmethod
-    def generate_radar_chart(wb):
-        from openpyxl.chart import (
-            RadarChart,
-            Reference,
-        )
+    def generate_radar_chart(file_dir):
+        file_list = os.listdir(file_dir)
 
-        ws = wb.active
-        labels = Reference(ws, min_col=5, min_row=10, max_col=8)
-        data = Reference(ws, min_col=4, min_row=11, max_col=8, max_row=14)
+        for i in range(0, len(file_list)):
+            path = os.path.join(file_dir, file_list[i])
+            base_name = os.path.basename(path)
 
-        radar_chart = RadarChart()
-        radar_chart.type = "marker"
+            if os.path.isdir(path):
+                SetData2Overview.generate_radar_chart(path)
 
-        radar_chart.add_data(data, from_rows=True, titles_from_data=True)
-        radar_chart.set_categories(labels)
+            if base_name == template_overview_table_name:
+                print("generate_radar_chart file name is " + path)
 
-        radar_chart.style = 26
-        radar_chart.y_axis.delete = True
-        radar_chart.width = 30
-        radar_chart.height = 14
+                from openpyxl.chart import (
+                    RadarChart,
+                    Reference,
+                )
 
-        for s in radar_chart.series:
-            s.graphicalProperties.line.width = 20000
+                from openpyxl import load_workbook
+                wb = load_workbook(path)
+                ws = wb["Sheet2"]
+                to_ws = wb.active
+                labels = Reference(ws, min_col=5, min_row=10, max_col=8)
+                data = Reference(ws, min_col=4, min_row=11, max_col=8, max_row=14)
 
-        ws.add_chart(radar_chart, "D58")
+                radar_chart = RadarChart()
+                radar_chart.type = "marker"
+
+                radar_chart.add_data(data, from_rows=True, titles_from_data=True)
+                radar_chart.set_categories(labels)
+
+                radar_chart.style = 26
+                radar_chart.y_axis.delete = True
+                radar_chart.width = 30
+                radar_chart.height = 14
+
+                for s in radar_chart.series:
+                    s.graphicalProperties.line.width = 20000
+
+                to_ws.add_chart(radar_chart, "D58")
+
+                wb.template = False
+                wb.save(path)
         return

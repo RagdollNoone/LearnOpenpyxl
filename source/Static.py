@@ -28,6 +28,11 @@ overviewNameDict = {'Boss': {'Pathfindings': 'E12', 'Aligning': 'F12', 'Empoweri
                     'DirectReport': {'Pathfindings': 'E14', 'Aligning': 'F14', 'Empowering': 'G14', 'Modeling': 'H14'},
                     'Self': {'Pathfindings': 'E11', 'Aligning': 'F11', 'Empowering': 'G11', 'Modeling': 'H11'}}
 
+radarOverviewNameDict = {'Boss': {'Pathfindings': 'E12', 'Aligning': 'F12', 'Empowering': 'H12', 'Modeling': 'G12'},
+                         'Peer': {'Pathfindings': 'E13', 'Aligning': 'F13', 'Empowering': 'H13', 'Modeling': 'G13'},
+                         'DirectReport': {'Pathfindings': 'E14', 'Aligning': 'F14', 'Empowering': 'H14', 'Modeling': 'G14'},
+                         'Self': {'Pathfindings': 'E11', 'Aligning': 'F11', 'Empowering': 'H11', 'Modeling': 'G11'}}
+
 targetSheetArr = ['Pathfindings', 'Aligning', 'Empowering', 'Modeling']
 
 targetEvaluateValueDict = {'Strongly Disagree': 0,

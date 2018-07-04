@@ -8,7 +8,8 @@ from Static import targetRootDir
 from Static import clean_output_dir
 from Static import rootDir
 
-scan_data = True
+scan_data = False
+generate_chart = False
 
 # init
 dm = DataMgr.DataMgr()
@@ -59,6 +60,8 @@ print("generate_overview_table is finish")
 print("##########################")
 
 # 生成图像
-
+if generate_chart:
+    sd2o.generate_line_chart(targetRootDir)
+    sd2o.generate_radar_chart(targetRootDir)
 
 # excel转pdf输出
