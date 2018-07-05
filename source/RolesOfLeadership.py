@@ -8,8 +8,8 @@ from Static import targetRootDir
 from Static import clean_output_dir
 from Static import rootDir
 
-scan_data = False
-generate_chart = False
+scan_data = True
+generate_chart = True
 
 # init
 dm = DataMgr.DataMgr()
