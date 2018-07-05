@@ -69,8 +69,8 @@ class SetData2Overview():
                     radar_ws[radarOverviewNameDict['Self'][sheet_name]] = self_average
                     radar_ws[radarOverviewNameDict['DirectReport'][sheet_name]] = direct_report_average
 
-                to_wb.template = False
-                to_wb.save(path)
+                # to_wb.template = False
+                # to_wb.save(path)
         return
 
     @staticmethod

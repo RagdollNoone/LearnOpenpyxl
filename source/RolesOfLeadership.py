@@ -8,7 +8,7 @@ from Static import targetRootDir
 from Static import clean_output_dir
 from Static import rootDir
 
-scan_data = True
+scan_data = False
 generate_chart = False
 
 # init
@@ -21,6 +21,7 @@ if scan_data:
     clean_output_dir(targetRootDir)
     print("##########################")
     print("clean_output_dir is finish")
+    print("##########################")
 
 # contain
 dm.set_convert_input_2_detail(ci2d)
