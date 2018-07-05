@@ -3,3 +3,9 @@
 
 /source/.idea/*
 /source/venv/*
+/source/et_xmlfile/*
+/source/openpyxl/*
+/source/jdcal.py
+*.spec
+
+/.idea/*

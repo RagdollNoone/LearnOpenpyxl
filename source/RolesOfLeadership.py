@@ -9,7 +9,7 @@ from Static import clean_output_dir
 from Static import rootDir
 
 scan_data = True
-generate_chart = True
+generate_chart = False
 
 # init
 dm = DataMgr.DataMgr()
@@ -63,5 +63,9 @@ print("##########################")
 if generate_chart:
     sd2o.generate_line_chart(targetRootDir)
     sd2o.generate_radar_chart(targetRootDir)
+
+print("##########################")
+print("Successfully!~")
+print("##########################")
 
 # excel转pdf输出

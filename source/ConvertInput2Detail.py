@@ -194,7 +194,7 @@ class ConvertInput2Detail():
                 for key in targetSheetDict:
                     ws = wb[key]
                     for j in range(int(targetSheetDict[key][0]), int(targetSheetDict[key][1] + 1)):
-                        print("generate_other_average current sheet is " + key + "current process row is " + str(j))
+                        # print("generate_other_average current sheet is " + key + "current process row is " + str(j))
 
                         direct_value = ws[('L' + str(j))].value
                         peer_value = ws[('M' + str(j))].value
