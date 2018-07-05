@@ -46,11 +46,11 @@ targetEvaluateValueDict = {'Strongly Disagree': 0,
 [col_position, can_direct_write_data]
 ['L', True]
 """
-targetNameDict = {'DirectReport': ['L', True],
-                  'Peer': ['M', False],
-                  'Boss': ['N', True],
-                  'OthersAverage': ['O', True],
-                  'Self': ['P', True]}
+targetNameDict = {'DirectReport': ['D', True],
+                  'Peer': ['E', False],
+                  'Boss': ['F', True],
+                  'OthersAverage': ['G', True],
+                  'Self': ['H', True]}
 
 """
 [begin_row_index, end_row_index, question_index_begin, question_index_end]

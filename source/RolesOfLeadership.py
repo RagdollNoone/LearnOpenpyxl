@@ -48,11 +48,10 @@ if scan_data:
     print("generate_identity_average_score is finish")
     print("##########################")
 
-if scan_data:
-    dm.generate_other_average_score()
-    print("##########################")
-    print("generate_other_average_score is finish")
-    print("##########################")
+dm.generate_other_average_score()
+print("##########################")
+print("generate_other_average_score is finish")
+print("##########################")
 
 # 生成Overview文件
 dm.generate_overview_table()
