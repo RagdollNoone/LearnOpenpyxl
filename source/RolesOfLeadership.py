@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
+import os
+
 import ConvertInput2Detail
 import DataMgr
 import SetData2Overview
@@ -69,3 +71,5 @@ print("Successfully!~")
 print("##########################")
 
 # excel转pdf输出
+
+os.system("Pause")
