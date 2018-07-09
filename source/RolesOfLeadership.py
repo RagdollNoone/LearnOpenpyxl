@@ -8,7 +8,7 @@ from Static import targetRootDir
 from Static import clean_output_dir
 from Static import rootDir
 
-scan_data = False
+scan_data = True
 generate_chart = False
 
 # init

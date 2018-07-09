@@ -42,7 +42,7 @@ class DataMgr():
             print("generate_peer_average_score file name is " + file_path)
 
             for index in self.peerDetailTable[name]:
-                data = int(self.peerDetailTable[name][index] / 4)
+                data = round(self.peerDetailTable[name][index] / 4)
                 self.peerDetailTable[name][index] = data
 
                 self.process_score(name, "Peer", data)
@@ -64,7 +64,7 @@ class DataMgr():
     def generate_identity_average_score(self):
         for name in self.overViewTable:
             for identity in self.overViewTable[name]:
-                data = int(self.overViewTable[name][identity] / 64)
+                data = round(self.overViewTable[name][identity] / 64)
                 self.overViewTable[name][identity] = data
         return
 

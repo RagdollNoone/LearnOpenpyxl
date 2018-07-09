@@ -45,17 +45,17 @@ class SetData2Overview():
                     self_total = 0
                     direct_report_total = 0
 
-                    for k in range(begin_row, end_row):
+                    for k in range(begin_row, end_row + 1):
                         peer_total = peer_total + from_ws[self.get_unit('Peer', k)].value
                         boss_total = boss_total + from_ws[self.get_unit('Boss', k)].value
                         self_total = self_total + from_ws[self.get_unit('Self', k)].value
                         direct_report_total = direct_report_total + from_ws[self.get_unit('DirectReport', k)].value
 
                     number = end_row - begin_row + 1
-                    peer_average = int(peer_total / number)
-                    boss_average = int(boss_total / number)
-                    self_average = int(self_total / number)
-                    direct_report_average = int(direct_report_total / number)
+                    peer_average = round(peer_total / number)
+                    boss_average = round(boss_total / number)
+                    self_average = round(self_total / number)
+                    direct_report_average = round(direct_report_total / number)
 
                     to_ws = to_wb.active
                     to_ws[overviewNameDict['Peer'][sheet_name]] = peer_average
