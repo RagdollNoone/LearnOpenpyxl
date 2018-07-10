@@ -57,8 +57,8 @@ targetNameDict = {'DirectReport': ['D', True],
 [2, 16, 0, 14, 0]
 """
 targetSheetDict = {'Pathfindings': [2, 16, 0, 14],
-                   'Aligning': [2, 20, 15, 33],
-                   'Empowering': [2, 14, 34, 46],
+                   'Aligning': [2, 17, 15, 30],
+                   'Empowering': [2, 17, 31, 46],
                    'Modeling': [2, 18, 47, 63]}
 
 
