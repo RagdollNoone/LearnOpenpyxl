@@ -10,6 +10,7 @@ from Static import targetRootDir
 from Static import clean_output_dir
 from Static import rootDir
 
+clear_data = True
 scan_data = True
 generate_chart = False
 
@@ -19,7 +20,7 @@ ci2d = ConvertInput2Detail.ConvertInput2Detail()
 sd2o = SetData2Overview.SetData2Overview()
 
 # 清空output的数据
-if scan_data:
+if clear_data:
     clean_output_dir(targetRootDir)
     print("##########################")
     print("clean_output_dir is finish")
