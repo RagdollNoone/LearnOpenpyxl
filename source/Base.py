@@ -3,3 +3,12 @@
 
 MISSING = object()
 
+SPLIT_CHAR_EQUAL = "="
+SPLIT_CHAR_COMMA = ","
+
+# copy
+
+# makedir
+
+
+

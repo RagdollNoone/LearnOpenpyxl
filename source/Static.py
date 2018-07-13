@@ -36,10 +36,10 @@ radarOverviewNameDict = {'Boss': {'Pathfindings': 'E12', 'Aligning': 'F12', 'Emp
 targetSheetArr = ['Pathfindings', 'Aligning', 'Empowering', 'Modeling']
 
 targetEvaluateValueDict = {'Strongly Disagree': 0,
-                           'Disagree': 20,
-                           'Slightly Disagree': 40,
-                           'Slightly Agree': 60,
-                           'Agree': 80,
+                           'Disagree': 40,
+                           'Slightly Disagree': 20,
+                           'Slightly Agree': 80,
+                           'Agree': 60,
                            'Strongly Agree': 100}
 
 """
