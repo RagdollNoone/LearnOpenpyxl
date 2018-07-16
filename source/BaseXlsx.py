@@ -18,21 +18,24 @@ class BaseXlsx(object):
         self.sheet_name_arr = {}
         self.key_cell_table = {}
 
-        """ move to detail table """
-        self.pre_find_cell = MISSING
-
-    def active_xlsx(self):
+    def active_xlsx(self, config_path, sheet_name=MISSING):
         self.wb = load_workbook(self.file_path)
-        self.current_ws = self.wb.active
+
+        if sheet_name is MISSING:
+            sheet_name = self.wb.sheetnames[0]
+
+        self.current_ws = self.wb[sheet_name]
+
+        self.top_left_str = self.get_top_left_str(config_path)
+        assert self.top_left_str is not MISSING, \
+            "get top left str fail\n"
+
         return
-
-    def open_xlsx(self):
-        self.wb = load_workbook(self.file_path)
 
     def load_sheet(self, sheet_name=MISSING):
         """" load sheet by name """
 
-        assert self.wb is not MISSING
+        assert self.wb is not MISSING, "current wb is NULL\n"
 
         result = MISSING
         if sheet_name is MISSING: result = self.wb.active
@@ -44,7 +47,7 @@ class BaseXlsx(object):
     def write_value(self, cell, value):
         """ write value to sheet """
 
-        assert self.wb is not MISSING
+        assert self.wb is not MISSING, "current wb is NULL\n"
 
         cell.value = value
         self.wb.template = False
@@ -56,7 +59,8 @@ class BaseXlsx(object):
         if content in self.key_cell_table:
             return self.key_cell_table[content]
 
-        assert self.current_ws is not MISSING
+        assert self.current_ws is not MISSING, "current ws is NULL\n"
+
         for rows in self.current_ws.rows:
             for cell in rows:
                 if cell.value == content:
@@ -64,35 +68,8 @@ class BaseXlsx(object):
                         self.key_cell_table[content] = cell
                     return cell
 
+        print("get_cell_by_content: find cell fail about " + content)
         return MISSING
-
-    """ move to detail table"""
-    def get_cell_by_question_number(self, question_id, identity):
-        # c = cell.col_idx
-
-        top_left_cell = self.get_cell_by_content(self.top_left_str)
-        tc = top_left_cell.col_idx
-        pr = self.pre_find_cell.row
-
-        identity_cell = self.get_cell_by_content(identity)
-
-        if self.current_ws.cell(row=pr, col=tc).value == question_id:
-            result = self.current_ws.cell(row=pr, col=identity_cell.col_idx)
-            return result
-
-        if (pr + 1) > self.current_ws.max_row:
-            self.get_next_sheet()
-            return self.get_cell_by_question_number(question_id, identity)
-
-        if self.current_ws.cell(row=(pr + 1), col=tc).value == question_id:
-            result = self.current_ws.cell(row=pr, col=identity_cell.col_idx)
-            return result
-
-        index_cell = self.get_cell_by_content(question_id)
-        if index_cell is MISSING:
-            return MISSING
-        return result = self.
-
 
     def get_cell_by_cell_and_offset(self, cell, row_offset=0, col_offset=0):
         """
@@ -101,6 +78,8 @@ class BaseXlsx(object):
         :param col_offset: col offset value
         :return: end position cell
         """
+
+        assert self.current_ws is not MISSING, "current ws is NULL\n"
 
         c = cell.col_idx + col_offset
         r = cell.row + row_offset
@@ -113,6 +92,8 @@ class BaseXlsx(object):
         :param cell2: cell contain target cell col info
         :return: cell with max(row1, row2), max(col1, col2)
         """
+
+        assert self.current_ws is not MISSING, "current ws is NULL\n"
 
         c1 = cell1.col_idx
         c2 = cell2.col_idx
@@ -128,7 +109,8 @@ class BaseXlsx(object):
         key is index to help loop find next
         """
 
-        assert self.wb is not MISSING
+        assert self.wb is not MISSING, "current wb is NULL\n"
+
         i = 0
         for name in self.wb.sheetnames:
             self.sheet_name_arr[i] = name
@@ -142,6 +124,16 @@ class BaseXlsx(object):
                 next_sheet_name = self.sheet_name_arr[next_key]
                 self.load_sheet(next_sheet_name)
                 break
+
+    def get_sheet_range(self):
+        """ get table valid area row number """
+
+        assert self.current_ws is not MISSING, \
+            "current ws is NULL\n"
+
+        top_left_cell = self.get_cell_by_content(self.top_left_str)
+        return self.current_ws.max_row - top_left_cell.row
+
 
     @staticmethod
     def get_top_left_str(file_path):
@@ -164,15 +156,15 @@ class BaseXlsx(object):
         return result
 
 
-overview_path = "../Resource/RolesOfLeadershipOverview.xlsx"
-detail_path = "../Resource/RolesOfLeadershipDetail.xlsx"
-detail_config_path = "../Resource/DetailExcelConfig.txt"
-
-detail_table = BaseXlsx(detail_path)
+# overview_path = "../Resource/RolesOfLeadershipOverview.xlsx"
+# detail_path = "../Resource/RolesOfLeadershipDetail.xlsx"
+# detail_config_path = "../Resource/DetailExcelConfig.txt"
+#
+# detail_table = BaseXlsx(detail_path)
 # overview_table = BaseXlsx(overview_path)
+#
+# detail_table.active_xlsx()
+# detail_table.top_left_str = detail_table.get_top_left_str(detail_config_path)
+# cell_result1 = detail_table.get_cell_by_content(detail_table.top_left_str, need_cache=True)
+# cell_result2 = detail_table.get_cell_by_content(detail_table.top_left_str)
 
-detail_table.active_xlsx()
-detail_table.top_left_str = detail_table.get_top_left_str(detail_config_path)
-cell_result1 = detail_table.get_cell_by_content(detail_table.top_left_str)
-cell_result2 = detail_table.get_cell_by_content(detail_table.top_left_str)
-# detail_table.get_sheet_name_arr()

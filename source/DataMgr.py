@@ -5,6 +5,10 @@ import os
 
 from Static import targetRootDir
 from Static import template_detail_table_name
+from Base import DETAIL_FILE_NAME
+from Base import OVERVIEW_FILE_NAME
+from Base import DETAIL_CONFIG_FILE
+from Base import OVERVIEW_CONFIG_FILE
 
 
 class DataMgr():
@@ -74,3 +78,31 @@ class DataMgr():
 
     def generate_overview_table(self):
         self.setData2Overview.generate_overview_table(targetRootDir)
+
+    #############################################
+    detailxlsx_dict = {}
+
+    # static
+    def inputxlsx_data_2_detailxlsx(self, file_path, identity, question_id, cell):
+        detail_obj = self.get_detailxlsx_through_inputxlsx_path(file_path)
+        target_cell = detail_obj.get_cell_by_question_number(question_id, identity)
+        detail_obj.write_value(target_cell, cell.value)
+
+    def get_detailxlsx_through_inputxlsx_path(self, file_path):
+        import os
+
+        base_name = os.path.basename(file_path)
+        be_evaluate_name = base_name.split("2")[1]
+        if be_evaluate_name in self.detailxlsx_dict:
+            return self.detailxlsx_dict[be_evaluate_name]
+
+        dir_name = os.path.dirname(file_path)
+        target_dir_name = dir_name.replace("input", "output")
+        detail_path = os.path.join(target_dir_name, DETAIL_FILE_NAME)
+
+        from DetailXlsx import DetailXlsx
+        obj = DetailXlsx(detail_path)
+        obj.active_self(DETAIL_CONFIG_FILE)
+        self.detailxlsx_dict[be_evaluate_name] = obj
+
+        return obj

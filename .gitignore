@@ -6,6 +6,8 @@
 /source/et_xmlfile/*
 /source/openpyxl/*
 /source/jdcal.py
+/source/build/*
+/source/dist/*
 *.spec
 
 /.idea/*
